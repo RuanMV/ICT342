@@ -16,8 +16,6 @@ import org.jetbrains.anko.doAsync
 class MainActivity : AppCompatActivity() {
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
-        // Delayed removal of status and navigation bar
-
         // Note that some of these constants are new as of API 16 (Jelly Bean)
         // and API 19 (KitKat). It is safe to use them, as they are inlined
         // at compile-time and do nothing on earlier devices.
@@ -26,8 +24,7 @@ class MainActivity : AppCompatActivity() {
                     View.SYSTEM_UI_FLAG_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
     }
 
     private var mVisible: Boolean = false
@@ -60,21 +57,21 @@ class MainActivity : AppCompatActivity() {
                         view.loadUrl(url)
                         return true
                     }
+
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        super.onPageFinished(view, url)
+                        fullscreen_content.visibility = View.VISIBLE
+                        progress_bar.visibility = View.GONE
+                    }
                 }
 
                 // Load the URL for the website
                 fullscreen_content.loadUrl("http://www.ict342.rf.gd/wordpress")
             }
         }
-    }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide()
+        mHideHandler.removeCallbacks(mHideRunnable)
+        mHideHandler.postDelayed(mHideRunnable, 0.toLong())
     }
 
     private fun toggle() {
@@ -110,15 +107,6 @@ class MainActivity : AppCompatActivity() {
         mHideHandler.removeCallbacks(mHidePart2Runnable)
     }
 
-    /**
-     * Schedules a call to hide() in [delayMillis], canceling any
-     * previously scheduled calls.
-     */
-    private fun delayedHide() {
-        mHideHandler.removeCallbacks(mHideRunnable)
-        mHideHandler.postDelayed(mHideRunnable, 0.toLong())
-    }
-
     companion object {
         /**
          * Whether or not the system UI should be auto-hidden after
@@ -137,5 +125,12 @@ class MainActivity : AppCompatActivity() {
          * and a change of the status and navigation bar.
          */
         private const val UI_ANIMATION_DELAY = 300
+    }
+
+    override fun onBackPressed() {
+        if (fullscreen_content.canGoBack())
+            fullscreen_content.goBack()
+        else
+            super.onBackPressed()
     }
 }
