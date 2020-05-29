@@ -1,9 +1,13 @@
 # ICT342
 Final year project for ICT342
 
-Source code for the database, web interface, and mobile interface.
+Group 1: Jarad Little, Ryan Hipfner, Jeffrey Sperling, Ruan Vermaak, Darcy Yoon
 
-Database source code in Database folder.
+Source code for the database, mobile application, and website.
 
-Mobile Application source code Mobile Application folder and
+Database source code is in the Database folder.
+
+Mobile Application source code is in the Mobile Application folder and
 Mobile APK added in app folder for easy install.
+
+Website source code is in the Website folder.
